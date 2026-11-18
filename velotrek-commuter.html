@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VELOTREK — Custom Urban Bicycles &amp; Commuter Accessories</title>
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   1. RESET & DESIGN SYSTEM
+   ══════════════════════════════════════════════════════════════════ */
+:root {
+  --bg-sand:       #f7f5f0;
+  --bg-card:       #ffffff;
+  --ink-900:       #181c20;
+  --ink-700:       #374151;
+  --ink-400:       #6b7280;
+  --ink-200:       #e5e7eb;
+  
+  --accent-green:  #2d6a4f;
+  --accent-green-l:#d8f3dc;
+  --accent-gold:   #d97706;
+  --accent-gold-l: #fef3c7;
+  --accent-terra:  #c05621;
+  --accent-olive:  #4d5b36;
+  --accent-slate:  #2b2d42;
+  
+  --border-light:  #e5e0d8;
+  --radius-sm:     6px;
+  --radius-md:     12px;
+  --radius-lg:     20px;
+  --shadow-sm:     0 2px 6px rgba(0,0,0,0.04);
+  --shadow-md:     0 8px 24px rgba(0,0,0,0.07);
+  --shadow-lg:     0 18px 40px rgba(0,0,0,0.12);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: var(--bg-sand); }
+::-webkit-scrollbar-thumb { background: #cfc8bd; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+
+::selection {
+  background: var(--accent-green);
+  color: #ffffff;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-sand);
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; height: auto; }
+
+/* Hidden Radio Inputs for CSS-Only State Engine */
+.state-controller {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   2. NAVBAR
+   ══════════════════════════════════════════════════════════════════ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247, 245, 240, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+}
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--ink-900);
+  letter-spacing: -0.03em;
+}
+.brand-icon-box {
+  width: 38px;
+  height: 38px;
+  background: var(--accent-green);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.nav-links a {
+  position: relative;
+  transition: color 0.2s ease;
+  padding: 0.2rem 0;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--accent-green);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-links a:hover {
+  color: var(--accent-green);
+}
+.nav-links a:hover::after {
+  width: 100%;
+}
+.nav-cta-btn {
+  background: var(--accent-green);
+  color: #fff !important;
+  padding: 0.55rem 1.25rem !important;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, transform 0.2s !important;
+}
+.nav-cta-btn::after { display: none !important; }
+.nav-cta-btn:hover {
+  background: #1e4d38;
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   3. HERO SECTION (WITH DUAL VIEW CSS :CHECKED SWITCHER)
+   ══════════════════════════════════════════════════════════════════ */
+.hero {
+  padding: 4.5rem 1.5rem 3.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light);
+  background: radial-gradient(circle at 50% 20%, #ffffff 0%, var(--bg-sand) 70%);
+}
+.hero-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent-green-l);
+  color: var(--accent-green);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  color: var(--ink-900);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  max-width: 860px;
+  margin: 0 auto 1rem;
+}
+.hero p {
+  font-size: 1.15rem;
+  color: var(--ink-400);
+  max-width: 620px;
+  margin: 0 auto 2rem;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: var(--accent-green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.35);
+  transition: all 0.25s ease;
+}
+.btn-primary:hover {
+  background: #1e4d38;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.45);
+}
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  background: var(--bg-card);
+  color: var(--ink-900);
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--ink-900);
+}
+
+/* Hero Showcase Frame */
+.hero-display-box {
+  max-width: 660px;
+  margin: 2.5rem auto 0;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+}
+
+/* CSS :checked View Tabs */
+.hero-view-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.hero-view-label {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  background: var(--bg-sand);
+  border: 1px solid var(--border-light);
+  color: var(--ink-700);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+#hero-tab-photo:checked ~ .hero .tab-photo-btn,
+#hero-tab-vector:checked ~ .hero .tab-vector-btn {
+  background: var(--accent-green);
+  color: #fff;
+  border-color: var(--accent-green);
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.25);
+}
+
+/* Visibility toggled purely with CSS :checked */
+.hero-photo-panel, .hero-vector-panel { display: none; }
+#hero-tab-photo:checked  ~ .hero .hero-photo-panel  { display: block; }
+#hero-tab-vector:checked ~ .hero .hero-vector-panel { display: block; }
+
+.hero-photo-img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   4. CUSTOM BIKE BUILDER (#builder)
+   ══════════════════════════════════════════════════════════════════ */
+#builder {
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: auto;
+}
+.section-headline-box {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+.pill-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  background: var(--accent-gold-l);
+  color: var(--accent-gold);
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -0.02em;
+}
+.section-sub {
+  color: var(--ink-400);
+  font-size: 1rem;
+  margin-top: 0.4rem;
+}
+
+.builder-interface {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Bike Preview Stage */
+.preview-stage {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 1.5rem 1.75rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  position: relative;
+}
+.preview-stage figcaption {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-400);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-light);
+  padding-top: 0.85rem;
+}
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-green);
+  font-weight: 700;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite ease-in-out;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Builder Controls Configuration Form */
+.configurator-panel {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+}
+.config-group {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.config-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.config-group-title {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+  margin-bottom: 0.85rem;
+}
+.button-selector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+/* Custom Interactive Labels */
+.interactive-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--ink-700);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.interactive-label:hover {
+  border-color: var(--accent-green);
+  background: var(--accent-green-l);
+}
+
+.swatch-pip {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+.pip-black { background: #1a1a1a; }
+.pip-olive { background: var(--accent-olive); }
+.pip-terra { background: var(--accent-terra); }
+.pip-ti    { background: #94a3b8; }
+
+/* ── CSS :CHECKED Active Button States ── */
+#frame-black:checked ~ .builder-interface .btn-frame-black,
+#frame-olive:checked ~ .builder-interface .btn-frame-olive,
+#frame-terra:checked ~ .builder-interface .btn-frame-terra,
+#frame-ti:checked    ~ .builder-interface .btn-frame-ti,
+#bar-flat:checked    ~ .builder-interface .btn-bar-flat,
+#bar-drop:checked    ~ .builder-interface .btn-bar-drop,
+#bar-riser:checked   ~ .builder-interface .btn-bar-riser,
+#gear-single:checked ~ .builder-interface .btn-gear-single,
+#gear-hub:checked    ~ .builder-interface .btn-gear-hub,
+#fender-check:checked ~ .builder-interface .btn-fender {
+  background: var(--accent-green);
+  color: #fff;
+  border-color: var(--accent-green);
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.25);
+}
+
+/* ── CSS :CHECKED Vector Bike Frame Stroke Reactive Switching ── */
+.bike-frame-dynamic {
+  transition: stroke 0.3s ease;
+}
+#frame-black:checked ~ .builder-interface .bike-frame-dynamic { stroke: #1a1a1a !important; }
+#frame-olive:checked ~ .builder-interface .bike-frame-dynamic { stroke: var(--accent-olive) !important; }
+#frame-terra:checked ~ .builder-interface .bike-frame-dynamic { stroke: var(--accent-terra) !important; }
+#frame-ti:checked    ~ .builder-interface .bike-frame-dynamic { stroke: #64748b !important; }
+
+/* ── CSS :CHECKED Handlebar Visibility ── */
+.bar-view-flat, .bar-view-drop, .bar-view-riser { opacity: 0; transition: opacity 0.3s ease; }
+#bar-flat:checked  ~ .builder-interface .bar-view-flat  { opacity: 1; }
+#bar-drop:checked  ~ .builder-interface .bar-view-drop  { opacity: 1; }
+#bar-riser:checked ~ .builder-interface .bar-view-riser { opacity: 1; }
+
+/* ── CSS :CHECKED Fenders Visibility ── */
+.fenders-view { opacity: 0; transition: opacity 0.3s ease; }
+#fender-check:checked ~ .builder-interface .fenders-view { opacity: 1; }
+
+/* ── CSS :CHECKED Live Specs & Price Swap ── */
+.spec-color-black, .spec-color-olive, .spec-color-terra, .spec-color-ti { display: none; }
+#frame-black:checked ~ .builder-interface .spec-color-black { display: inline; }
+#frame-olive:checked ~ .builder-interface .spec-color-olive { display: inline; }
+#frame-terra:checked ~ .builder-interface .spec-color-terra { display: inline; }
+#frame-ti:checked    ~ .builder-interface .spec-color-ti    { display: inline; }
+
+.spec-bar-flat, .spec-bar-drop, .spec-bar-riser { display: none; }
+#bar-flat:checked  ~ .builder-interface .spec-bar-flat  { display: inline; }
+#bar-drop:checked  ~ .builder-interface .spec-bar-drop  { display: inline; }
+#bar-riser:checked ~ .builder-interface .spec-bar-riser { display: inline; }
+
+.spec-gear-single, .spec-gear-hub { display: none; }
+#gear-single:checked ~ .builder-interface .spec-gear-single { display: inline; }
+#gear-hub:checked    ~ .builder-interface .spec-gear-hub    { display: inline; }
+
+.spec-fender-no, .spec-fender-yes { display: none; }
+#fender-check:checked   ~ .builder-interface .spec-fender-yes { display: inline; }
+#fender-check:not(:checked) ~ .builder-interface .spec-fender-no { display: inline; }
+
+/* Calculated Price Output */
+.price-base-single, .price-base-hub, .price-fender-single, .price-fender-hub { display: none; }
+#gear-single:checked ~ #fender-check:not(:checked) ~ .builder-interface .price-base-single { display: inline; }
+#gear-hub:checked    ~ #fender-check:not(:checked) ~ .builder-interface .price-base-hub    { display: inline; }
+#gear-single:checked ~ #fender-check:checked       ~ .builder-interface .price-fender-single { display: inline; }
+#gear-hub:checked    ~ #fender-check:checked       ~ .builder-interface .price-fender-hub    { display: inline; }
+
+.build-summary-card {
+  background: var(--bg-sand);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  border: 1px solid var(--border-light);
+  margin-top: 1.5rem;
+}
+.summary-price-badge {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-green);
+  margin-top: 0.5rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   5. COMMUTER ACCESSORIES GRID (#accessories)
+   ══════════════════════════════════════════════════════════════════ */
+#accessories {
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: auto;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+.product-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  position: relative;
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-olive), var(--accent-terra));
+  opacity: 0.6;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(45, 106, 79, 0.3);
+}
+.product-card:hover::before {
+  opacity: 1;
+  height: 6px;
+}
+
+.product-img-box {
+  background: #f0ede6;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 1.25rem;
+}
+.product-img-box svg {
+  max-height: 180px;
+  transition: transform 0.35s ease;
+}
+.product-card:hover .product-img-box svg {
+  transform: scale(1.08);
+}
+.card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.product-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.product-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin-bottom: 0.4rem;
+}
+.product-desc {
+  font-size: 0.9rem;
+  color: var(--ink-400);
+  margin-bottom: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Quick-view FAQ with <details> */
+.product-card details {
+  margin-top: 0.75rem;
+  background: var(--bg-sand);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-light);
+  font-size: 0.85rem;
+}
+.product-card summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--ink-900);
+  outline: none;
+  user-select: none;
+}
+.product-card summary:hover {
+  color: var(--accent-green);
+}
+.product-card details[open] summary {
+  margin-bottom: 0.4rem;
+  color: var(--accent-green);
+}
+.product-card details p {
+  color: var(--ink-400);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.product-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+.product-price {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent-green);
+}
+.add-bag-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--ink-900);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+.add-bag-pill:hover {
+  background: var(--accent-green);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   6. WORKSHOP & FRAME GUARANTEE (#about)
+   ══════════════════════════════════════════════════════════════════ */
+#about {
+  padding: 5rem 1.5rem;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+.about-wrap {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+.about-text-col h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+.about-text-col p {
+  color: var(--ink-400);
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+}
+.benefits-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+.benefits-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+.check-circle {
+  width: 22px;
+  height: 22px;
+  background: var(--accent-green-l);
+  color: var(--accent-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   7. FOOTER
+   ══════════════════════════════════════════════════════════════════ */
+.site-footer {
+  background: var(--ink-900);
+  color: #9ca3af;
+  padding: 4.5rem 1.5rem 2.5rem;
+  font-size: 0.9rem;
+}
+.footer-cols {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-logo-title {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.footer-heading {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1rem;
+}
+.footer-nav {
+  list-style: none;
+}
+.footer-nav li {
+  margin-bottom: 0.6rem;
+}
+.footer-nav a:hover {
+  color: #fff;
+}
+.footer-legal-bar {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   8. MOBILE RESPONSIVENESS
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .builder-interface { grid-template-columns: 1fr; }
+  .about-wrap { grid-template-columns: 1fr; }
+  .footer-cols { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .nav-container { flex-direction: column; gap: 0.75rem; }
+  .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .hero h1 { font-size: 2rem; }
+  .hero-display-box { padding: 1rem; }
+  .footer-cols { grid-template-columns: 1fr; }
+  .footer-legal-bar { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ALL CSS :CHECKED STATE CONTROLLER INPUTS (TOP SIBLINGS)
+     ══════════════════════════════════════════════════════════════════ -->
+
+<!-- Hero View Mode Radios -->
+<input type="radio" name="hero-tab" id="hero-tab-photo" class="state-controller" checked aria-label="Hero Studio Photograph View">
+<input type="radio" name="hero-tab" id="hero-tab-vector" class="state-controller" aria-label="Hero Blueprint Vector View">
+
+<!-- Bike Builder Frame Colors -->
+<input type="radio" name="frame-color" id="frame-black" class="state-controller" checked aria-label="Obsidian Black Frame">
+<input type="radio" name="frame-color" id="frame-olive" class="state-controller" aria-label="Forest Olive Frame">
+<input type="radio" name="frame-color" id="frame-terra" class="state-controller" aria-label="Heritage Terracotta Frame">
+<input type="radio" name="frame-color" id="frame-ti"    class="state-controller" aria-label="Raw Titanium Frame">
+
+<!-- Bike Builder Cockpit / Handlebars -->
+<input type="radio" name="bar-type" id="bar-flat"  class="state-controller" checked aria-label="Urban Flat Bar">
+<input type="radio" name="bar-type" id="bar-drop"  class="state-controller" aria-label="Classic Drop Bar">
+<input type="radio" name="bar-type" id="bar-riser" class="state-controller" aria-label="Cruiser Riser Bar">
+
+<!-- Bike Builder Drivetrain -->
+<input type="radio" name="gear-type" id="gear-single" class="state-controller" checked aria-label="Single Speed Drivetrain">
+<input type="radio" name="gear-type" id="gear-hub"    class="state-controller" aria-label="Shimano 8-Speed Internal Hub">
+
+<!-- Bike Builder Fenders Checkbox -->
+<input type="checkbox" id="fender-check" class="state-controller" aria-label="All-Weather Fenders">
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════════════════════════ -->
+<nav class="site-nav">
+  <div class="nav-container">
+    <a href="#" class="brand-link">
+      <span class="brand-icon-box">
+        <!-- SVG Brand Wheel Icon -->
+        <svg viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="VELOTREK Brand Logo" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="13" fill="none" stroke="#fff" stroke-width="2.5"/>
+          <circle cx="16" cy="16" r="4" fill="#fff"/>
+          <line x1="16" y1="3" x2="16" y2="12" stroke="#fff" stroke-width="2"/>
+          <line x1="16" y1="20" x2="16" y2="29" stroke="#fff" stroke-width="2"/>
+          <line x1="3" y1="16" x2="12" y2="16" stroke="#fff" stroke-width="2"/>
+          <line x1="20" y1="16" x2="29" y2="16" stroke="#fff" stroke-width="2"/>
+        </svg>
+      </span>
+      VELOTREK
+    </a>
+
+    <div class="nav-links">
+      <a href="#builder">Custom Builder</a>
+      <a href="#accessories">Accessories</a>
+      <a href="#about">Craftsmanship</a>
+      <a href="#builder" class="nav-cta-btn">Build Your Bike</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     HERO SECTION
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-tagline">
+    <span>★</span> Hand-Crafted Urban Commuter Bicycles
+  </div>
+  
+  <h1>Bespoke Commuter Bikes Built for the Daily City Grind</h1>
+  <p>Lightweight chromoly frames, stormproof accessories, and precision-engineered geometry designed to make everyday urban cycling fast, comfortable, and reliable.</p>
+  
+  <div class="hero-actions">
+    <a href="#builder" class="btn-primary">Configure Your Custom Bike ↓</a>
+    <a href="#accessories" class="btn-secondary">Explore Commuter Gear</a>
+  </div>
+
+  <!-- Showcase Display Frame (Toggled by CSS :checked) -->
+  <figure class="hero-display-box">
+    <!-- View Mode Selector Labels -->
+    <div class="hero-view-tabs">
+      <label for="hero-tab-photo" class="hero-view-label tab-photo-btn">📸 Studio Photograph View</label>
+      <label for="hero-tab-vector" class="hero-view-label tab-vector-btn">📐 Vector Technical Blueprint</label>
+    </div>
+
+    <!-- Panel 1: Real Studio Photograph -->
+    <div class="hero-photo-panel">
+      <img src="minimalist_commuter_bike.jpg" alt="VELOTREK Custom Commuter Bicycle in Golden Hour Studio Light" class="hero-photo-img" loading="eager">
+      <figcaption style="margin-top:0.85rem; font-size:0.85rem; font-weight:600; color:var(--ink-400);">
+        Figure 1.0 — VELOTREK Urban Apex Series (Matte Olive &amp; Leather Spec)
+      </figcaption>
+    </div>
+
+    <!-- Panel 2: Vector Technical Blueprint -->
+    <div class="hero-vector-panel">
+      <svg viewBox="0 0 500 240" width="100%" height="auto" role="img" aria-label="VELOTREK Blueprint Illustration" xmlns="http://www.w3.org/2000/svg">
+        <line x1="20" y1="210" x2="480" y2="210" stroke="#d5d0c6" stroke-width="2" stroke-linecap="round" stroke-dasharray="6,4"/>
+        <circle cx="115" cy="165" r="50" fill="none" stroke="#222" stroke-width="5"/>
+        <circle cx="385" cy="165" r="50" fill="none" stroke="#222" stroke-width="5"/>
+        <line x1="115" y1="165" x2="215" y2="65" stroke="var(--accent-green)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="115" y1="165" x2="200" y2="165" stroke="var(--accent-green)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="215" y1="60" x2="200" y2="165" stroke="var(--accent-green)" stroke-width="8" stroke-linecap="round"/>
+        <line x1="200" y1="165" x2="340" y2="75" stroke="var(--accent-green)" stroke-width="7" stroke-linecap="round"/>
+        <line x1="215" y1="65" x2="340" y2="75" stroke="var(--accent-green)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="340" y1="75" x2="355" y2="135" stroke="var(--accent-green)" stroke-width="7" stroke-linecap="round"/>
+        <line x1="355" y1="130" x2="385" y2="165" stroke="#4a5568" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="215" cy="48" rx="18" ry="6" fill="#111"/>
+        <line x1="325" y1="66" x2="365" y2="66" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+      <figcaption style="margin-top:0.85rem; font-size:0.85rem; font-weight:600; color:var(--ink-400);">
+        Figure 1.1 — CAD Double-Diamond Chromoly Geometry
+      </figcaption>
+    </div>
+  </figure>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+   INTERACTIVE BIKE BUILDER (#builder)
+   ══════════════════════════════════════════════════════════════════ -->
+<section id="builder">
+  <div class="section-headline-box">
+    <span class="pill-badge">Pure CSS Configurator</span>
+    <h2 class="section-title">Design Your Custom Ride</h2>
+    <p class="section-sub">Select your frame finish, handlebar setup, and drivetrain. The visual preview and pricing update instantly with zero JavaScript.</p>
+  </div>
+
+  <div class="builder-interface">
+    <!-- Visual Stage (SVG Vector that reacts to :checked) -->
+    <figure class="preview-stage">
+      <svg viewBox="0 0 460 270" width="420" height="250" role="img" aria-label="Interactive Custom Bike Preview" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ground Line -->
+        <line x1="20" y1="235" x2="440" y2="235" stroke="#e5e0d8" stroke-width="2" stroke-dasharray="6,4"/>
+
+        <!-- Rear Wheel -->
+        <circle cx="110" cy="180" r="54" fill="none" stroke="#1f2937" stroke-width="5"/>
+        <circle cx="110" cy="180" r="46" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+        <circle cx="110" cy="180" r="6" fill="#4b5563"/>
+        <g stroke="#9ca3af" stroke-width="1">
+          <line x1="110" y1="126" x2="110" y2="234"/>
+          <line x1="56"  y1="180" x2="164" y2="180"/>
+          <line x1="72"  y1="142" x2="148" y2="218"/>
+          <line x1="148" y1="142" x2="72"  y2="218"/>
+        </g>
+
+        <!-- Front Wheel -->
+        <circle cx="350" cy="180" r="54" fill="none" stroke="#1f2937" stroke-width="5"/>
+        <circle cx="350" cy="180" r="46" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+        <circle cx="350" cy="180" r="6" fill="#4b5563"/>
+        <g stroke="#9ca3af" stroke-width="1">
+          <line x1="350" y1="126" x2="350" y2="234"/>
+          <line x1="296" y1="180" x2="404" y2="180"/>
+          <line x1="312" y1="142" x2="388" y2="218"/>
+          <line x1="388" y1="142" x2="312" y2="218"/>
+        </g>
+
+        <!-- Dynamic Bike Frame (Stroke colour switches with CSS :checked) -->
+        <line class="bike-frame-dynamic" x1="110" y1="180" x2="200" y2="180" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round"/>
+        <line class="bike-frame-dynamic" x1="110" y1="180" x2="210" y2="72"  stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+        <line class="bike-frame-dynamic" x1="210" y1="65"  x2="200" y2="180" stroke="#1a1a1a" stroke-width="8" stroke-linecap="round"/>
+        <line class="bike-frame-dynamic" x1="200" y1="180" x2="320" y2="82"  stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"/>
+        <line class="bike-frame-dynamic" x1="210" y1="72"  x2="320" y2="82"  stroke="#1a1a1a" stroke-width="6.5" stroke-linecap="round"/>
+        <line class="bike-frame-dynamic" x1="320" y1="82"  x2="335" y2="148" stroke="#1a1a1a" stroke-width="8" stroke-linecap="round"/>
+
+        <!-- Front Fork -->
+        <line x1="335" y1="138" x2="350" y2="180" stroke="#4b5563" stroke-width="5.5" stroke-linecap="round"/>
+
+        <!-- Saddle -->
+        <line x1="210" y1="65" x2="210" y2="52" stroke="#4b5563" stroke-width="4.5"/>
+        <ellipse cx="210" cy="50" rx="20" ry="6" fill="#111827"/>
+
+        <!-- 1. Handlebar: Urban Flat Bar -->
+        <g class="bar-view-flat">
+          <line x1="315" y1="75" x2="320" y2="82" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+          <line x1="300" y1="71" x2="340" y2="71" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="295" y="67" width="8" height="8" rx="2" fill="#374151"/>
+          <rect x="337" y="67" width="8" height="8" rx="2" fill="#374151"/>
+        </g>
+
+        <!-- 2. Handlebar: Classic Drop Bar -->
+        <g class="bar-view-drop">
+          <line x1="315" y1="75" x2="320" y2="82" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+          <line x1="300" y1="67" x2="335" y2="67" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+          <path d="M300 67 Q290 67 290 77 L290 92" fill="none" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M335 67 Q345 67 345 77 L345 92" fill="none" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- 3. Handlebar: Cruiser Swept Riser -->
+        <g class="bar-view-riser">
+          <line x1="315" y1="75" x2="320" y2="82" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M295 62 Q310 68 320 74 Q330 68 345 62" fill="none" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="290" y="58" width="8" height="8" rx="2" fill="#374151"/>
+          <rect x="342" y="58" width="8" height="8" rx="2" fill="#374151"/>
+        </g>
+
+        <!-- All-Weather Fenders (Controlled by #fender-check) -->
+        <g class="fenders-view">
+          <path d="M60 170 Q70 120 115 120 Q160 120 170 170" fill="none" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+          <path d="M300 170 Q310 120 355 120 Q395 120 405 160" fill="none" stroke="#374151" stroke-width="4" stroke-linecap="round"/>
+        </g>
+
+        <!-- Crankset & Pedals -->
+        <circle cx="200" cy="180" r="11" fill="none" stroke="#4b5563" stroke-width="3"/>
+        <line x1="188" y1="190" x2="212" y2="170" stroke="#4b5563" stroke-width="3" stroke-linecap="round"/>
+        <rect x="180" y="188" width="12" height="5" rx="1.5" fill="#1f2937"/>
+        <rect x="210" y="167" width="12" height="5" rx="1.5" fill="#1f2937"/>
+        <line x1="110" y1="180" x2="200" y2="180" stroke="#9ca3af" stroke-width="1.8" stroke-dasharray="3,2"/>
+      </svg>
+      <figcaption>
+        <span>Figure 2.0 — Custom Spec Active Vector Render</span>
+        <span class="live-indicator"><i class="live-dot"></i> Live CSS Reactive</span>
+      </figcaption>
+    </figure>
+
+    <!-- Configuration Options Form -->
+    <div class="configurator-panel">
+      <!-- 1. Frame Color -->
+      <div class="config-group">
+        <span class="config-group-title">1. Select Frame Finish</span>
+        <div class="button-selector-grid">
+          <label for="frame-black" class="interactive-label btn-frame-black" title="Obsidian Black">
+            <span class="swatch-pip pip-black"></span> Obsidian Black
+          </label>
+          <label for="frame-olive" class="interactive-label btn-frame-olive" title="Forest Olive">
+            <span class="swatch-pip pip-olive"></span> Forest Olive
+          </label>
+          <label for="frame-terra" class="interactive-label btn-frame-terra" title="Heritage Terracotta">
+            <span class="swatch-pip pip-terra"></span> Terracotta
+          </label>
+          <label for="frame-ti" class="interactive-label btn-frame-ti" title="Raw Titanium">
+            <span class="swatch-pip pip-ti"></span> Titanium Grey
+          </label>
+        </div>
+      </div>
+
+      <!-- 2. Cockpit / Handlebars -->
+      <div class="config-group">
+        <span class="config-group-title">2. Choose Handlebar Cockpit</span>
+        <div class="button-selector-grid">
+          <label for="bar-flat" class="interactive-label btn-bar-flat" title="Urban Flat Bar">
+            <span>━</span> Flat City Bar
+          </label>
+          <label for="bar-drop" class="interactive-label btn-bar-drop" title="Classic Drop Bar">
+            <span>⮯</span> Classic Drop
+          </label>
+          <label for="bar-riser" class="interactive-label btn-bar-riser" title="Cruiser Swept Riser">
+            <span>⮵</span> Cruiser Riser
+          </label>
+        </div>
+      </div>
+
+      <!-- 3. Drivetrain Transmission -->
+      <div class="config-group">
+        <span class="config-group-title">3. Drivetrain Transmission</span>
+        <div class="button-selector-grid">
+          <label for="gear-single" class="interactive-label btn-gear-single" title="Single Speed">
+            <span>⚙</span> Single Speed
+          </label>
+          <label for="gear-hub" class="interactive-label btn-gear-hub" title="Shimano 8-Speed Hub">
+            <span>⚙⚙</span> Shimano 8-Speed (+₹ 3,500)
+          </label>
+        </div>
+      </div>
+
+      <!-- 4. All-Weather Add-On -->
+      <div class="config-group">
+        <span class="config-group-title">4. Commuter Package</span>
+        <div class="button-selector-grid">
+          <label for="fender-check" class="interactive-label btn-fender" title="All-Weather Fenders">
+            <span>🛡</span> Full Alloy Fenders (+₹ 1,299)
+          </label>
+        </div>
+      </div>
+
+      <!-- Dynamic Spec & Price Summary Card -->
+      <div class="build-summary-card">
+        <h4 style="font-size:1.05rem; color:var(--ink-900); margin-bottom:0.4rem;">Configured Build Summary</h4>
+        <p style="font-size:0.9rem; margin-bottom:0.25rem;">
+          Frame: 
+          <strong class="spec-color-black">Obsidian Black Powdercoat</strong>
+          <strong class="spec-color-olive">Forest Olive Satin</strong>
+          <strong class="spec-color-terra">Heritage Terracotta Earth</strong>
+          <strong class="spec-color-ti">Raw Brushed Titanium</strong>
+        </p>
+        <p style="font-size:0.9rem; margin-bottom:0.25rem;">
+          Cockpit: 
+          <strong class="spec-bar-flat">Urban Flat Riser</strong>
+          <strong class="spec-bar-drop">Aero Classic Drop</strong>
+          <strong class="spec-bar-riser">Swept Comfort Cruiser</strong>
+        </p>
+        <p style="font-size:0.9rem; margin-bottom:0.25rem;">
+          Gears: 
+          <strong class="spec-gear-single">Minimalist Single Speed (Gates Carbon Ready)</strong>
+          <strong class="spec-gear-hub">Shimano Alfine 8-Speed Internal Hub</strong>
+        </p>
+        <p style="font-size:0.9rem; margin-bottom:0.25rem;">
+          Fenders: 
+          <strong class="spec-fender-no">Stripped Weatherless</strong>
+          <strong class="spec-fender-yes">Full-Coverage Anodized Alloy Fenders</strong>
+        </p>
+        <p style="font-size:0.8rem; color:var(--ink-400); margin-top:0.4rem;">
+          4130 Seamless Steel • WTB Horizon 700x38c Tires • Promax Dual Piston Disc Brakes
+        </p>
+        <div class="summary-price-badge">
+          <span class="price-base-single">₹ 24,999</span>
+          <span class="price-base-hub">₹ 28,499</span>
+          <span class="price-fender-single">₹ 26,298</span>
+          <span class="price-fender-hub">₹ 29,798</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     COMMUTER CYCLING ACCESSORIES (#accessories)
+     ══════════════════════════════════════════════════════════════════ -->
+<section id="accessories">
+  <div class="section-headline-box">
+    <span class="pill-badge" style="background:var(--accent-green-l); color:var(--accent-green);">All-Weather Gear</span>
+    <h2 class="section-title">Commuter Essentials</h2>
+    <p class="section-sub">Tested against relentless monsoons, dark winter evenings, and daily urban miles. All visuals are 100% self-contained crisp SVGs.</p>
+  </div>
+
+  <div class="product-grid">
+
+    <!-- Card 1: Waterproof Pannier Bag -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">25L Waterproof</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Stormproof Roll-Top Pannier Bag" xmlns="http://www.w3.org/2000/svg">
+          <rect x="28" y="20" width="104" height="110" rx="8" fill="var(--accent-olive)"/>
+          <path d="M28 42 Q80 30 132 42" fill="none" stroke="#374127" stroke-width="3.5"/>
+          <rect x="68" y="24" width="24" height="12" rx="3" fill="#cbd5e1"/>
+          <rect x="74" y="26" width="12" height="8" rx="2" fill="#64748b"/>
+          <rect x="40" y="64" width="80" height="42" rx="5" fill="#5f6e44"/>
+          <rect x="62" y="78" width="36" height="4" rx="2" fill="#cbd5e1"/>
+          <rect x="34" y="116" width="92" height="5" rx="2.5" fill="#f8fafc" opacity="0.9"/>
+          <path d="M60 20 Q80 6 100 20" fill="none" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">Stormproof 25L Pannier</h3>
+        <p class="product-desc">High-frequency welded TPU construction with roll-top seal. Includes quick-release rack cam locks and padded 16″ laptop pocket.</p>
+        <details>
+          <summary>Mounting &amp; Waterproof Specs</summary>
+          <p>Fits 8–16 mm standard luggage racks. Submersible IPX6 waterproof rating with reflective 3M safety accents on all sides.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 2,799</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 2: LED Light Set -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">400 Lumens • USB-C</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Rechargeable LED Light Set" xmlns="http://www.w3.org/2000/svg">
+          <rect x="22" y="26" width="76" height="34" rx="17" fill="#1e293b"/>
+          <circle cx="98" cy="43" r="20" fill="#334155"/>
+          <circle cx="98" cy="43" r="16" fill="#f59e0b"/>
+          <circle cx="98" cy="43" r="10" fill="#fef3c7"/>
+          <line x1="122" y1="43" x2="148" y2="43" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="120" y1="28" x2="142" y2="16" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="120" y1="58" x2="142" y2="70" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="32" y="96" width="60" height="28" rx="14" fill="#991b1b"/>
+          <circle cx="50" cy="110" r="8" fill="#ef4444"/>
+          <circle cx="74" cy="110" r="8" fill="#ef4444"/>
+          <rect x="96" y="100" width="22" height="14" rx="3" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+          <text x="98" y="126" font-size="8" font-weight="700" fill="#64748b" font-family="sans-serif">USB-C</text>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">Photon Core Light Set</h3>
+        <p class="product-desc">400-lumen German StVZO anti-glare front beam with dual COB 60-lumen rear red flasher. Tool-free mount.</p>
+        <details>
+          <summary>Modes &amp; Battery Specs</summary>
+          <p>6 lighting modes: High (4 hrs), City Eco (10 hrs), Day Strobe, and Pulse. 1500mAh lithium battery with IP65 rainproof sealing.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 1,399</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 3: Heavy-Duty Lock -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">Sold Secure Gold</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Alloy Steel U-Lock" xmlns="http://www.w3.org/2000/svg">
+          <path d="M46 104 L46 46 Q46 14 80 14 Q114 14 114 46 L114 104" fill="none" stroke="#334155" stroke-width="14" stroke-linecap="round"/>
+          <path d="M52 98 L52 48 Q52 24 80 24 Q108 24 108 48 L108 98" fill="none" stroke="#64748b" stroke-width="2" opacity="0.4"/>
+          <rect x="32" y="96" width="96" height="38" rx="7" fill="#0f172a"/>
+          <circle cx="80" cy="118" r="7" fill="#020617" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="38" y="126" width="84" height="4" rx="2" fill="var(--accent-green)"/>
+          <circle cx="120" cy="136" r="6" fill="none" stroke="#94a3b8" stroke-width="2"/>
+          <line x1="120" y1="130" x2="120" y2="122" stroke="#94a3b8" stroke-width="2"/>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">Apex Guard 14mm U-Lock</h3>
+        <p class="product-desc">Case-hardened triple-heat-treated steel shackle with anti-rotation double deadbolt. Resists angle grinders and pry attacks.</p>
+        <details>
+          <summary>Key Replacement &amp; Frame Bracket</summary>
+          <p>Includes high-strength frame mounting bracket and 3 laser-cut keys with unique key code registration for lifetime replacements.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 2,499</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 4: Urban Helmet -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">MIPS Equipped</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Urban Commuter Helmet" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 90 Q20 24 80 16 Q140 24 140 90" fill="#1e293b"/>
+          <path d="M20 90 Q80 105 140 90 Q140 102 80 106 Q20 102 20 90 Z" fill="#334155"/>
+          <rect x="44" y="34" width="18" height="6" rx="3" fill="#f8fafc"/>
+          <rect x="71" y="30" width="18" height="6" rx="3" fill="#f8fafc"/>
+          <rect x="98" y="34" width="18" height="6" rx="3" fill="#f8fafc"/>
+          <rect x="52" y="52" width="16" height="5" rx="2.5" fill="#f8fafc"/>
+          <rect x="76" y="48" width="16" height="5" rx="2.5" fill="#f8fafc"/>
+          <rect x="94" y="52" width="16" height="5" rx="2.5" fill="#f8fafc"/>
+          <path d="M32 90 Q32 116 48 126" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M128 90 Q128 116 112 126" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="64" y="127" width="32" height="9" rx="3" fill="#cbd5e1"/>
+          <circle cx="80" cy="86" r="6" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">Metropolis MIPS Helmet</h3>
+        <p class="product-desc">In-mold polycarbonate shell with low-friction rotational impact liner, magnetic Fidlock buckle, and integrated visor.</p>
+        <details>
+          <summary>Sizing &amp; Safety Standards</summary>
+          <p>Certified to CE EN1078 &amp; CPSC standards. Micro-dial fit system for 54–61 cm head sizes. Washable moisture-wicking pads.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 2,199</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 5: Phone Mount -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">CNC 6061 Alloy</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Aluminium Phone Mount" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="122" width="130" height="16" rx="8" fill="#64748b"/>
+          <rect x="15" y="122" width="130" height="8" rx="4" fill="#94a3b8"/>
+          <rect x="65" y="116" width="30" height="26" rx="5" fill="#334155"/>
+          <rect x="73" y="86" width="14" height="34" rx="4" fill="#1e293b"/>
+          <circle cx="80" cy="86" r="8" fill="#475569"/>
+          <rect x="42" y="12" width="76" height="78" rx="8" fill="#0f172a"/>
+          <rect x="47" y="17" width="66" height="68" rx="4" fill="#2563eb"/>
+          <path d="M56 46 L70 36 L84 50 L100 38" fill="none" stroke="#ffffff" stroke-width="2.5" opacity="0.9"/>
+          <circle cx="76" cy="46" r="4.5" fill="#ef4444"/>
+          <text x="80" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#64748b" font-family="sans-serif">360°</text>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">VeloClamp CNC Phone Mount</h3>
+        <p class="product-desc">Precision-machined aircraft aluminium mount with dual-jaw mechanical lock and 360° ball socket. Zero vibration.</p>
+        <details>
+          <summary>Device &amp; Bar Fitment</summary>
+          <p>Accommodates any phone between 4.7″ and 7.1″ with thick cases. Fits 22.2 mm, 25.4 mm, and 31.8 mm handlebars with included shims.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 999</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 6: Saddle Bag -->
+    <article class="product-card">
+      <figure class="product-img-box">
+        <span class="card-badge">Cordura 1000D</span>
+        <svg viewBox="0 0 160 160" width="140" height="140" role="img" aria-label="Wedge Saddle Bag" xmlns="http://www.w3.org/2000/svg">
+          <line x1="42" y1="24" x2="118" y2="24" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M32 58 Q28 42 60 38 L100 38 Q132 42 128 58 L122 112 Q122 126 80 130 Q38 126 38 112 Z" fill="var(--accent-terra)"/>
+          <path d="M34 58 Q80 48 126 58" fill="none" stroke="#9a3412" stroke-width="3"/>
+          <rect x="66" y="52" width="28" height="14" rx="3.5" fill="#f59e0b"/>
+          <rect x="50" y="78" width="60" height="26" rx="5" fill="#9a3412"/>
+          <rect x="42" y="114" width="76" height="5" rx="2.5" fill="#f8fafc" opacity="0.8"/>
+        </svg>
+      </figure>
+      <div class="product-content">
+        <h3 class="product-title">AeroPod 1.5L Saddle Bag</h3>
+        <p class="product-desc">Compact aerodynamic wedge seat bag designed to hold 2 spare tubes, levers, CO₂ inflator, multi-tool, and key fob.</p>
+        <details>
+          <summary>Weatherproof Rail Mount</summary>
+          <p>Direct rail buckles clip tightly to saddle rails with non-abrasive seatpost velcro wrap. Water-resistant YKK zipper with glove-friendly pull.</p>
+        </details>
+        <div class="product-card-footer">
+          <span class="product-price">₹ 799</span>
+          <span class="add-bag-pill">In Stock</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     WORKSHOP & CRAFTSMANSHIP (#about)
+     ══════════════════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="about-wrap">
+    <div class="about-text-col">
+      <span class="pill-badge" style="background:var(--accent-green-l); color:var(--accent-green);">Hand-Built Quality</span>
+      <h2>Crafted for City Streets, Built for a Lifetime</h2>
+      <p>We started VELOTREK out of frustration with disposable bicycles that rattle apart after one monsoon season. Every frame is hand-mitred and TIG-welded in small batches using double-butted 4130 chromoly steel.</p>
+      <p>By pairing timeless bicycle geometry with modern disc brakes and weather-sealed internal gear hubs, our bikes deliver zero-fuss daily transportation that stays smooth decade after decade.</p>
+      
+      <ul class="benefits-list">
+        <li><span class="check-circle">✓</span> Lifetime Chromoly Steel Frame Guarantee</li>
+        <li><span class="check-circle">✓</span> 100% Offline Single-File Architecture (Zero JavaScript)</li>
+        <li><span class="check-circle">✓</span> All Components Readily Serviceable at Any Local Bike Shop</li>
+        <li><span class="check-circle">✓</span> Free Lifetime Safety Tune-Ups for All Original Owners</li>
+      </ul>
+    </div>
+
+    <!-- Atelier Seal Graphic -->
+    <figure style="background:var(--bg-sand); padding:2.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-light); text-align:center;">
+      <svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="VELOTREK Workshop Seal" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="var(--accent-green)" stroke-width="3" stroke-dasharray="5,4"/>
+        <circle cx="100" cy="100" r="80" fill="#fff" stroke="var(--border-light)" stroke-width="2"/>
+        <circle cx="100" cy="100" r="66" fill="none" stroke="var(--accent-green)" stroke-width="2"/>
+        <line x1="68" y1="68" x2="132" y2="132" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+        <line x1="132" y1="68" x2="68" y2="132" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="18" fill="var(--accent-green)"/>
+        <text x="100" y="52" text-anchor="middle" font-size="10" font-weight="800" fill="var(--ink-900)" letter-spacing="3">VELOTREK</text>
+        <text x="100" y="156" text-anchor="middle" font-size="8" font-weight="700" fill="var(--ink-400)" letter-spacing="1">ATELIER CERTIFIED</text>
+      </svg>
+      <figcaption style="margin-top:1rem; font-weight:700; color:var(--ink-900); font-size:0.9rem;">
+        Atelier Batch Inspection &amp; Certification
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-cols">
+    <div>
+      <div class="footer-logo-title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-green)" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+        VELOTREK ATELIER
+      </div>
+      <p style="margin-bottom:0.85rem; line-height:1.6;">Precision urban commuter bicycles, roll-top stormproof bags, and dependable road gear for daily city transit.</p>
+      <p>📍 18 Velodrome Arcade, Indiranagar, Bengaluru 560038</p>
+      <p>⏱ Tues – Sun: 10:00 AM – 8:30 PM (Closed Mondays)</p>
+    </div>
+
+    <div>
+      <h4 class="footer-heading">Bicycles</h4>
+      <ul class="footer-nav">
+        <li><a href="#builder">Apex Commuter MK-I</a></li>
+        <li><a href="#builder">Urban Single Speed</a></li>
+        <li><a href="#builder">Alfine 8-Speed Touring</a></li>
+        <li><a href="#builder">Custom Geometry Config</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-heading">Commuter Gear</h4>
+      <ul class="footer-nav">
+        <li><a href="#accessories">Waterproof Panniers</a></li>
+        <li><a href="#accessories">Rechargeable LED Lights</a></li>
+        <li><a href="#accessories">Hardened U-Locks</a></li>
+        <li><a href="#accessories">Aero Saddle Pods</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-heading">Standards</h4>
+      <ul class="footer-nav">
+        <li>✓ 100% Pure HTML5 &amp; CSS3</li>
+        <li>✓ Zero JavaScript Overhead</li>
+        <li>✓ 100% Offline &amp; Self-Contained</li>
+        <li>✓ Lifetime Frame Warranty</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-legal-bar">
+    <p>© 2026 VELOTREK Bicycle Co. All rights reserved.</p>
+    <p>Pure CSS :checked Interactivity • Completely Self-Contained.</p>
+  </div>
+</footer>
+
+</body>
+</html>
